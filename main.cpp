@@ -9,11 +9,11 @@
 using namespace std;
 
 float max(float x, float y);
-void prewitt(IplImage *src, IplImage *dst);//PrewittËã×Ó  
-void roberts(IplImage *src, IplImage *dst); //robertsËã×Ó  
-void sobel(IplImage *src, IplImage *dst);  //sobelËã×Ó  
-void canny(IplImage *src, IplImage *dst);//cannyËã×Ó  
-void Laplacian(IplImage *src, IplImage *dst32, IplImage *dst); //LaplacianËã×Ó
+void prewitt(IplImage *src, IplImage *dst);//Prewittç®—å­  
+void roberts(IplImage *src, IplImage *dst); //robertsç®—å­  
+void sobel(IplImage *src, IplImage *dst);  //sobelç®—å­  
+void canny(IplImage *src, IplImage *dst);//cannyç®—å­  
+void Laplacian(IplImage *src, IplImage *dst32, IplImage *dst); //Laplacianç®—å­
 
 typedef struct
 {
@@ -36,11 +36,11 @@ int getmax(int*array, int n)
 
 int main()
 {
-	//ÔØÈëÍ¼Ïñ  
+	//è½½å…¥å›¾åƒ  
 	IplImage *src = NULL;
 	src = cvLoadImage("081_0062.jpg", 0);
-	cvNamedWindow("¡¾Ô­Í¼¡¿", 1);
-	cvShowImage("¡¾Ô­Í¼¡¿", src);
+	cvNamedWindow("ã€åŸå›¾ã€‘", 1);
+	cvShowImage("ã€åŸå›¾ã€‘", src);
 
 	IplImage *pCannyImg = cvCreateImage(cvGetSize(src), 8, 1);
 	canny(src, pCannyImg);
@@ -62,8 +62,8 @@ int main()
 	cvReleaseImage(&pPrewittImg);
 
 	cvWaitKey(0);
-	//Ïú»Ù´°¿Ú,ÊÍ·ÅÍ¼Ïñ  
-	cvDestroyWindow("¡¾Ô­Í¼¡¿");
+	//é”€æ¯çª—å£,é‡Šæ”¾å›¾åƒ  
+	cvDestroyWindow("ã€åŸå›¾ã€‘");
 	cvReleaseImage(&src);
 	return -1;
 }
@@ -74,10 +74,10 @@ float max(float x, float y)
 	else z = y;
 	return(z);
 }
-//PrewittËã×Ó  
+//Prewittç®—å­  
 void prewitt(IplImage *src, IplImage *dst)
 {
-	//¶¨ÒåprewittËã×ÓµÄÄ£°å  
+	//å®šä¹‰prewittç®—å­çš„æ¨¡æ¿  
 	float prewittx[9] =
 	{
 		-1, 0, 1,
@@ -98,37 +98,37 @@ void prewitt(IplImage *src, IplImage *dst)
 	IplImage *dstx = cvCreateImage(cvGetSize(src), 8, 1);
 	IplImage *dsty = cvCreateImage(cvGetSize(src), 8, 1);
 
-	//¶ÔÍ¼ÏñÊ¹ÓÃÄ£°å£¬×Ô¶¯Ìî³ä±ß½ç  
+	//å¯¹å›¾åƒä½¿ç”¨æ¨¡æ¿ï¼Œè‡ªåŠ¨å¡«å……è¾¹ç•Œ  
 	cvFilter2D(src, dstx, &px, cvPoint(-1, -1));
 	cvFilter2D(src, dsty, &py, cvPoint(-1, -1));
 
-	//¼ÆËãÌİ¶È£¬  
+	//è®¡ç®—æ¢¯åº¦ï¼Œ  
 	int i, j, temp;
-	float tempx, tempy;  //¶¨ÒåÎª¸¡µãĞÍÊÇÎªÁË±ÜÃâsqrtº¯ÊıÒıÆğÆçÒå  
+	float tempx, tempy;  //å®šä¹‰ä¸ºæµ®ç‚¹å‹æ˜¯ä¸ºäº†é¿å…sqrtå‡½æ•°å¼•èµ·æ­§ä¹‰  
 	uchar* ptrx = (uchar*)dstx->imageData;
 	uchar* ptry = (uchar*)dsty->imageData;
 	for (i = 0; i<src->width; i++)
 	{
 		for (j = 0; j<src->height; j++)
 		{
-			tempx = ptrx[i + j*dstx->widthStep];   //tempx,tempy±íÊ¾µÄÊÇÖ¸ÕëËùÖ¸ÏòµÄÏñËØ  
+			tempx = ptrx[i + j*dstx->widthStep];   //tempx,tempyè¡¨ç¤ºçš„æ˜¯æŒ‡é’ˆæ‰€æŒ‡å‘çš„åƒç´   
 			tempy = ptry[i + j*dsty->widthStep];
 			temp = (int)sqrt(tempx*tempx + tempy*tempy);
 			dst->imageData[i + j*dstx->widthStep] = temp;
 		}
 	}
-	double min_val = 0, max_val = 0;//È¡Í¼²¢ÏÔÊ¾ÏñÖĞµÄ×î´ó×îĞ¡ÏñËØÖµ  
+	double min_val = 0, max_val = 0;//å–å›¾å¹¶æ˜¾ç¤ºåƒä¸­çš„æœ€å¤§æœ€å°åƒç´ å€¼  
 	cvMinMaxLoc(dst, &min_val, &max_val);
 	printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
 
-	cvSaveImage("PrewittImg.jpg", dst);//°ÑÍ¼Ïñ´æÈëÎÄ¼ş  
+	cvSaveImage("PrewittImg.jpg", dst);//æŠŠå›¾åƒå­˜å…¥æ–‡ä»¶  
 	cvReleaseImage(&dstx);
 	cvReleaseImage(&dsty);
-	cvNamedWindow("¡¾Ğ§¹ûÍ¼¡¿prewittËã×Ó", 1);
-	cvShowImage("¡¾Ğ§¹ûÍ¼¡¿prewittËã×Ó", dst);
+	cvNamedWindow("ã€æ•ˆæœå›¾ã€‘prewittç®—å­", 1);
+	cvShowImage("ã€æ•ˆæœå›¾ã€‘prewittç®—å­", dst);
 }
 
-//robertsËã×Ó  
+//robertsç®—å­  
 void roberts(IplImage *src, IplImage *dst)
 {
 	dst = cvCloneImage(src);
@@ -145,32 +145,32 @@ void roberts(IplImage *src, IplImage *dst)
 		for (x = 0; x<w - 1; x++)
 		{
 
-			for (i = 0; i<4; i++)    //È¡Ã¿¸ö2*2¾ØÕóÔªËØµÄÖ¸Õë      0 | 1  
+			for (i = 0; i<4; i++)    //å–æ¯ä¸ª2*2çŸ©é˜µå…ƒç´ çš„æŒ‡é’ˆ      0 | 1  
 			{                   //                             3 | 2  
 				ptr1[i] = *(ptr + (y + indexy[i])*dst->widthStep + x + indexx[i]);
 
 			}
-			temp = abs(ptr1[0] - ptr1[2]);    //¼ÆËã2*2¾ØÕóÖĞ0ºÍ2Î»ÖÃµÄ²î£¬È¡¾ø¶ÔÖµtemp  
-			temp1 = abs(ptr1[1] - ptr1[3]);   //¼ÆËã2*2¾ØÕóÖĞ1ºÍ3Î»ÖÃµÄ²î£¬È¡¾ø¶ÔÖµtemp1  
-			temp = (temp>temp1 ? temp : temp1); //Èôtemp1>temp,ÔòÒÔtemp1µÄÖµÌæ»»temp  
-			temp = (int)sqrt(float(temp*temp) + float(temp1*temp1));  //Êä³öÖµ  
-			*(ptr + y*dst->widthStep + x) = temp;       //½«Êä³öÖµ´æ·ÅÓÚdstÏñËØµÄ¶ÔÓ¦Î»ÖÃ  
+			temp = abs(ptr1[0] - ptr1[2]);    //è®¡ç®—2*2çŸ©é˜µä¸­0å’Œ2ä½ç½®çš„å·®ï¼Œå–ç»å¯¹å€¼temp  
+			temp1 = abs(ptr1[1] - ptr1[3]);   //è®¡ç®—2*2çŸ©é˜µä¸­1å’Œ3ä½ç½®çš„å·®ï¼Œå–ç»å¯¹å€¼temp1  
+			temp = (temp>temp1 ? temp : temp1); //è‹¥temp1>temp,åˆ™ä»¥temp1çš„å€¼æ›¿æ¢temp  
+			temp = (int)sqrt(float(temp*temp) + float(temp1*temp1));  //è¾“å‡ºå€¼  
+			*(ptr + y*dst->widthStep + x) = temp;       //å°†è¾“å‡ºå€¼å­˜æ”¾äºdståƒç´ çš„å¯¹åº”ä½ç½®  
 		}
-	double min_val = 0, max_val = 0;//È¡Í¼²¢ÏÔÊ¾ÏñÖĞµÄ×î´ó×îĞ¡ÏñËØÖµ  
+	double min_val = 0, max_val = 0;//å–å›¾å¹¶æ˜¾ç¤ºåƒä¸­çš„æœ€å¤§æœ€å°åƒç´ å€¼  
 	cvMinMaxLoc(dst, &min_val, &max_val);
 	printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
 	cvSaveImage("RobertsImg.jpg", dst);
-	cvNamedWindow("¡¾Ğ§¹ûÍ¼¡¿robertËã×Ó", 1);
-	cvShowImage("¡¾Ğ§¹ûÍ¼¡¿robertËã×Ó", dst);
+	cvNamedWindow("ã€æ•ˆæœå›¾ã€‘robertç®—å­", 1);
+	cvShowImage("ã€æ•ˆæœå›¾ã€‘robertç®—å­", dst);
 }
-//sobelËã×Ó  
+//sobelç®—å­  
 void sobel(IplImage *src, IplImage *dst)
 {
 	IplImage *pSobelImg_dx = cvCreateImage(cvGetSize(src), 32, 1);
 	IplImage *pSobelImg_dy = cvCreateImage(cvGetSize(src), 32, 1);
 	IplImage *pSobelImg_dxdy = cvCreateImage(cvGetSize(src), 32, 1);
 
-	//ÓÃsobelËã×Ó¼ÆËãÁ½¸ö·½ÏòµÄÎ¢·Ö  
+	//ç”¨sobelç®—å­è®¡ç®—ä¸¤ä¸ªæ–¹å‘çš„å¾®åˆ†  
 	cvSobel(src, pSobelImg_dx, 1, 0, 3);
 	cvSobel(src, pSobelImg_dy, 0, 1, 3);
 
@@ -205,14 +205,15 @@ void sobel(IplImage *src, IplImage *dst)
 
 	double tempx = 0;
 	double tempy = 0;
-	double theta = (180-166.777280)*pi / 180; //ÄæÊ±Õë
+	double theta = (180-166.777280)*pi / 180; //é€†æ—¶é’ˆ
 	double radius = 0;                   //for rotating
 	double temp = 0;                     //compare theta and alpha
 	double start = 0;                    //the start of the bow
 	double end = 2 * pi;                   //the end of the bow
-	int unqualified = 0;
-
+	int qualified = 0;
+        
 	P vertex[30];                         //vertex
+	P vertex_q[30];                       //good vertex
 	int index[30];                        //record the indexes of unqualified vertex
 	int index_dis[30];                    //record the distance of the unqualified vertex's index
 	double alpha_vs[30];                  //the alpha of each vertex
@@ -221,8 +222,7 @@ void sobel(IplImage *src, IplImage *dst)
 	int end_index;                       //record the end index then to find the end alpha
 	int flag[30];
 										 /* rotated uniform choosing vertex */
-	do
-	{
+	do{
 		ivl = (end - start) / n;
 		for (i = 0; i<n; i++)
 		{
@@ -242,7 +242,7 @@ void sobel(IplImage *src, IplImage *dst)
 			v2 = cvGetReal2D(pSobelImg_dy, vertex[i].y, vertex[i].x);
 			v = sqrt(v1*v1 + v2*v2);
 			if (v > 100)
-				flag[i] = 1;   //ãĞÖµ
+				flag[i] = 1;   //é˜ˆå€¼
 			else {
 				flag[i] = 0;
 			}
@@ -250,28 +250,23 @@ void sobel(IplImage *src, IplImage *dst)
 		}
 		for (i = 0; i < n; i++)
 		{
-			if (flag[i] == 0)
+			if (flag[i] == 1)
 			{
-				unqualified++;
 				index[j] = i;
-				j++;
+				vertex_q[j] = vertex[i];
+				j++; //j is the number of qualified vertex
 			}
 		}
-		for (i = 1; i<unqualified; i++)
-		{
-			index_dis[i-1] = index[i] - index[i - 1];
-		}
-		temp1 = getmax(index_dis, unqualified - 1);
-		start_index = index[temp1];
-		end_index = index[temp1 + 1];
-		start = alpha_vs[start_index];
-		end = alpha_vs[end_index];
-		for (int i = 0; i < n; i++)
-			cout << flag[i] << endl;
-		n = n / 2;
-		printf("-----");
+		n = 2 * n;
 		
-	} while (unqualified != 0 && n >= 6);
+		
+	}while( j < 6 )//make sure there are enough vertexes
+	qualified = j; 
+	//out put the array vertex_q is ok 
+	//qualified = j is the number of the qualified vertexes
+              
+		
+
 	/*
 	for (i = 0; i<src->height; i++)
 	{
@@ -292,41 +287,41 @@ void sobel(IplImage *src, IplImage *dst)
 		//cout << "Point(" << vertex[i].x << "," << vertex[i].y << ")," << endl;
 	}
 
-	cvConvertScale(pSobelImg_dxdy, dst);   //½«Í¼Ïñ×ª»¯Îª8Î»  
-	double min_val = 0, max_val = 0;//È¡Í¼²¢ÏÔÊ¾ÏñÖĞµÄ×î´ó×îĞ¡ÏñËØÖµ  
+	cvConvertScale(pSobelImg_dxdy, dst);   //å°†å›¾åƒè½¬åŒ–ä¸º8ä½  
+	double min_val = 0, max_val = 0;//å–å›¾å¹¶æ˜¾ç¤ºåƒä¸­çš„æœ€å¤§æœ€å°åƒç´ å€¼  
 	cvMinMaxLoc(pSobelImg_dxdy, &min_val, &max_val);
 	printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
 
-	//¹éÒ»»¯  
+	//å½’ä¸€åŒ–  
 	cvNormalize(dst, dst, 0, 255, CV_MINMAX, 0);
 
 	cvReleaseImage(&pSobelImg_dx);
 	cvReleaseImage(&pSobelImg_dy);
 	cvReleaseImage(&pSobelImg_dxdy);
-	cvSaveImage("SobelImg.jpg", dst);//°ÑÍ¼Ïñ´æÈëÎÄ¼ş  
-	cvNamedWindow("¡¾Ğ§¹ûÍ¼¡¿sobelËã×Ó", 1);
-	cvShowImage("¡¾Ğ§¹ûÍ¼¡¿sobelËã×Ó", dst);
+	cvSaveImage("SobelImg.jpg", dst);//æŠŠå›¾åƒå­˜å…¥æ–‡ä»¶  
+	cvNamedWindow("ã€æ•ˆæœå›¾ã€‘sobelç®—å­", 1);
+	cvShowImage("ã€æ•ˆæœå›¾ã€‘sobelç®—å­", dst);
 }
-//cannyËã×Ó  
+//cannyç®—å­  
 void canny(IplImage *src, IplImage *dst)
 {
 	cvCanny(src, dst, 100, 150, 3),
-		cvNamedWindow("¡¾Ğ§¹ûÍ¼¡¿²î·Ö£¨¶Ô½Ç£©", 1);
-	cvShowImage("¡¾Ğ§¹ûÍ¼¡¿²î·Ö£¨¶Ô½Ç£©", dst);
-	cvSaveImage("CannyImg.jpg", dst);//°ÑÍ¼Ïñ´æÈëÎÄ¼ş  
+		cvNamedWindow("ã€æ•ˆæœå›¾ã€‘å·®åˆ†ï¼ˆå¯¹è§’ï¼‰", 1);
+	cvShowImage("ã€æ•ˆæœå›¾ã€‘å·®åˆ†ï¼ˆå¯¹è§’ï¼‰", dst);
+	cvSaveImage("CannyImg.jpg", dst);//æŠŠå›¾åƒå­˜å…¥æ–‡ä»¶  
 	cvReleaseImage(&dst);
 }
-//LaplacianËã×Ó  
+//Laplacianç®—å­  
 void Laplacian(IplImage *src, IplImage *dst32, IplImage *dst)
 {
-	double min_val = 0, max_val = 0;//È¡Í¼²¢ÏÔÊ¾ÏñÖĞµÄ×î´ó×îĞ¡ÏñËØÖµ  
+	double min_val = 0, max_val = 0;//å–å›¾å¹¶æ˜¾ç¤ºåƒä¸­çš„æœ€å¤§æœ€å°åƒç´ å€¼  
 	cvLaplace(src, dst32, 5);
-	cvConvertScale(dst32, dst);   //½«Í¼Ïñ×ª»¯Îª8Î»  
+	cvConvertScale(dst32, dst);   //å°†å›¾åƒè½¬åŒ–ä¸º8ä½  
 	cvMinMaxLoc(dst, &min_val, &max_val);
 	printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
 	cvNormalize(dst, dst, 0, 255, CV_MINMAX, 0);
-	cvNamedWindow("¡¾Ğ§¹ûÍ¼¡¿laplacianËã×Ó", 1);
-	cvShowImage("¡¾Ğ§¹ûÍ¼¡¿laplacianËã×Ó", dst);
-	cvSaveImage("LaplaceImg.jpg", dst);//°ÑÍ¼Ïñ´æÈëÎÄ¼ş  
+	cvNamedWindow("ã€æ•ˆæœå›¾ã€‘laplacianç®—å­", 1);
+	cvShowImage("ã€æ•ˆæœå›¾ã€‘laplacianç®—å­", dst);
+	cvSaveImage("LaplaceImg.jpg", dst);//æŠŠå›¾åƒå­˜å…¥æ–‡ä»¶  
 	cvReleaseImage(&dst);
 }
